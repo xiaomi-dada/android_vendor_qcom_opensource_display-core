@@ -576,6 +576,8 @@ private:
   void SendRefresh(Display display);
 
   DisplayError GetConfigCount(uint64_t disp_id, uint32_t *count);
+  DisplayError GetDisplayAttributesForConfig(
+      uint64_t disp_id, int32_t config, DisplayConfigVariableInfo *attributes);
   DisplayError GetActiveConfigIndex(uint64_t disp_id, uint32_t *config);
   DisplayError SetActiveConfigIndex(uint64_t disp_id, uint32_t config);
   DisplayError SetNoisePlugInOverride(uint64_t disp_id, bool override_en,

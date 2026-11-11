@@ -2129,6 +2129,17 @@ DisplayError ConcurrencyMgr::GetConfigCount(uint64_t disp_id, uint32_t *count) {
   return services_->GetConfigCount(disp_id, count);
 }
 
+DisplayError ConcurrencyMgr::GetDisplayAttributesForConfig(
+    uint64_t disp_id, int32_t config, DisplayConfigVariableInfo *attributes) {
+  int disp_idx = disp_->GetDisplayIndex(INT(disp_id));
+  if (disp_idx == -1 || config < 0 || !attributes) {
+    return kErrorNotSupported;
+  }
+
+  return CallDisplayFunction(disp_idx, &SDMDisplay::GetDisplayAttributesForConfig, config,
+                             attributes);
+}
+
 DisplayError ConcurrencyMgr::GetActiveConfigIndex(uint64_t disp_id,
                                                   uint32_t *config) {
   return services_->GetActiveConfigIndex(disp_id, config);
