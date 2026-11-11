@@ -160,6 +160,14 @@ DisplayError SDMDisplayBuiltIn::Init() {
     if (enable_poms_during_doze_) {
       DLOGI("Enable POMS during Doze mode %" PRIu64, id_);
     }
+
+#ifdef XIAOMI_RGB_NOTIFIER
+    value = 0;
+    SDMDebugHandler::Get()->GetProperty(ENABLE_CWB_NOTIFY_SENSOR, &value);
+    if (value == 1) {
+      rgb_notifier_ = XiaomiRGBNotifier::Create();
+    }
+#endif
   }
 
   SDMDebugHandler::Get()->GetProperty(ENABLE_PERF_HINT_LARGE_COMP_CYCLE,
@@ -1584,6 +1592,12 @@ DisplayError SDMDisplayBuiltIn::CommitOrPrepare(
     bool needs_hint = NeedsLargeCompPerfHint();
     HandleLargeCompositionHint(!needs_hint);
   }
+
+#ifdef XIAOMI_RGB_NOTIFIER
+  if (rgb_notifier_ && current_power_mode_ == SDMPowerMode::POWER_MODE_ON) {
+    rgb_notifier_->SendFrameUpdate(is_primary_);
+  }
+#endif
 
   prepare_phase_ = false;
 

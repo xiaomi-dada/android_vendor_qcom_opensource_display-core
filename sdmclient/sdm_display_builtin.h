@@ -41,6 +41,7 @@
 
 #include "cpuhint.h"
 #include "sdm_display.h"
+#include "xiaomi_rgb_notifier.h"
 #include "sdm_layers.h"
 #include "utils/constants.h"
 #include "utils/sync_task.h"
@@ -192,6 +193,9 @@ private:
  bool enable_poms_during_doze_ = false;
 
  bool is_primary_ = false;
+#ifdef XIAOMI_RGB_NOTIFIER
+  std::unique_ptr<XiaomiRGBNotifier> rgb_notifier_;
+#endif
  bool disable_layer_stitch_ = true;
  SDMLayer *stitch_target_ = nullptr;
  SyncTask<LayerStitchTaskCode> layer_stitch_task_;

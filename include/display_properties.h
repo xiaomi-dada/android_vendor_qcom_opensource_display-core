@@ -206,6 +206,7 @@
 
 // Enable IWE
 #define ENABLE_INLINE_WRITEBACK              DISPLAY_PROP("enable_inline_writeback")
+#define ENABLE_CWB_NOTIFY_SENSOR             DISPLAY_PROP("enable_cwb_notify_sensor")
 
 // Configuration to reserve the writeback blocks for specific usage like CWB, IWE or WFD
 #define RESERVED_WRITEBACK_CONFIG            DISPLAY_PROP("reserved_writeback_config")
