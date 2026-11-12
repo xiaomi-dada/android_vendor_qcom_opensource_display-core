@@ -958,15 +958,24 @@ DisplayError HWDeviceDRM::PopulateDisplayAttributes(uint32_t index) {
   // Driver can expose list of dynamic pixel clocks, userspace needs to support dynamic change.
   display_attributes_[index].clock_khz = mode.clock;
 
+  float panel_width_mm = FLOAT(mm_width);
+  float panel_height_mm = FLOAT(mm_height);
+
   // If driver doesn't return panel width/height information, default to 320 dpi
   if (INT(mm_width) <= 0 || INT(mm_height) <= 0) {
-    mm_width  = UINT32(((FLOAT(mode.hdisplay) * 25.4f) / 320.0f) + 0.5f);
-    mm_height = UINT32(((FLOAT(mode.vdisplay) * 25.4f) / 320.0f) + 0.5f);
+    panel_width_mm = UINT32(((FLOAT(mode.hdisplay) * 25.4f) / 320.0f) + 0.5f);
+    panel_height_mm = UINT32(((FLOAT(mode.vdisplay) * 25.4f) / 320.0f) + 0.5f);
     DLOGW("Driver doesn't report panel physical width and height - defaulting to 320dpi");
+#ifdef PANEL_DIMENSIONS_IN_TENTH_MM
+  } else if (connector_info_.type == DRM_MODE_CONNECTOR_DSI) {
+    // Built-in panels report their physical size in tenths of a millimetre
+    panel_width_mm /= 10.0f;
+    panel_height_mm /= 10.0f;
+#endif
   }
 
-  display_attributes_[index].x_dpi = (FLOAT(mode.hdisplay) * 25.4f) / FLOAT(mm_width);
-  display_attributes_[index].y_dpi = (FLOAT(mode.vdisplay) * 25.4f) / FLOAT(mm_height);
+  display_attributes_[index].x_dpi = (FLOAT(mode.hdisplay) * 25.4f) / panel_width_mm;
+  display_attributes_[index].y_dpi = (FLOAT(mode.vdisplay) * 25.4f) / panel_height_mm;
   SetTopology(topology, &display_attributes_[index].topology);
   SetTopologySplit(display_attributes_[index].topology,
                    &display_attributes_[index].topology_num_split);
